@@ -33,8 +33,8 @@ const HomeBanner = () => {
         </div>
       </div>
       <div className="min-h-[37rem] hidden md:block">
-        <div className="-z-10 absolute mt-5 w-[36rem] h-[36rem] bg-[#ffece3] rounded-full"></div>
-        <Image src={home_img} alt="home_img" className="z-10" />
+        <div className="-z-10 absolute mt-5  md:w-[28rem] md:h-[28rem] lg:w-[36rem] lg:h-[36rem] bg-[#ffece3] rounded-full"></div>
+        <Image src={home_img} alt="home_img" className="z-10 min-h-full object-cover"  />
       </div>
     </div>
   );
