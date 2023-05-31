@@ -67,11 +67,11 @@ export function Header() {
 
           <div>
             <div
-              className={`h-[90vh] md:h-fit w-full flex justify-center items-center  pb-4 mt-4 md:block md:pb-0 md:mt-0 ${
+              className={`h-[90vh] md:h-fit w-full flex justify-center items-center pb-4 mt-4 md:block md:pb-0 md:mt-0 ${
                 navbar ? "block" : "hidden"
               }`}
             >
-              <NavigationMenuList className="flex-col md:flex-row px-10">
+              <NavigationMenuList className="flex-col md:flex-row px-10 flex-shrink">
                 <NavigationMenuItem>
                   <p className="my-1 md:my-0">Female</p>
                 </NavigationMenuItem>

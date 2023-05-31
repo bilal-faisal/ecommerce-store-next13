@@ -10,7 +10,7 @@ import { AiOutlineShoppingCart } from "react-icons/ai";
 const HomeBanner = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 my-5 md:my-10">
-      <div className="px-10 py-5 md:pl-28 md:py-16 space-y-7">
+      <div className="px-10 py-5 md:pl-14 lg:pl-28 md:py-16 space-y-7">
         <Button className="bg-[#e1edff] text-[blue] font-semibold text-lg">
           Sale 70%
         </Button>
@@ -33,7 +33,7 @@ const HomeBanner = () => {
         </div>
       </div>
       <div className="min-h-[37rem] hidden md:block">
-        <div className="-z-10 absolute mt-5  md:w-[28rem] md:h-[28rem] lg:w-[36rem] lg:h-[36rem] bg-[#ffece3] rounded-full"></div>
+        <div className="-z-10 absolute mt-5 md:w-[28rem] md:h-[28rem] lg:w-[36rem] lg:h-[36rem] bg-[#ffece3] rounded-full"></div>
         <Image src={home_img} alt="home_img" className="z-10 min-h-full object-cover"  />
       </div>
     </div>
