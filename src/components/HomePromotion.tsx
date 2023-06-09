@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 
 const HomePromotion = () => {
   return (
-    <div>
-      <h4 className="text-center text-xs tracking-wider font-semibold text-[#0062f5]">
+    <div className="mt-24">
+      <h4 className="text-center text-sm tracking-wider font-semibold text-[#0062f5]">
         PROMOTIONS
       </h4>
       <h2 className="text-center text-3xl tracking-wide font-extrabold py-3">
