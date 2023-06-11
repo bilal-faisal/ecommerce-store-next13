@@ -25,7 +25,7 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <div className="flex flex-wrap md:w-[60%]">
+      <div className="flex flex-wrap w-full px-16 md:px-0 md:w-[60%]">
         <div className="w-1/2 md:w-1/3 space-y-4">
           <h2 className="font-bold">Comapny</h2>
           <p>About</p>
