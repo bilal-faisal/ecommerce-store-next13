@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import Logo from "/public/logo.png";
 import { useState } from "react";
+import Link from "next/link";
 
 export function Header() {
   const [navbar, setNavbar] = useState(false);
@@ -82,7 +83,9 @@ export function Header() {
                   <p className="my-1 md:my-0">Kids</p>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <p className="mt-1 mb-2 md:my-0">All Products</p>
+                  <Link href={"/products"}>
+                    <p className="mt-1 mb-2 md:my-0">All Products</p>
+                  </Link>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                   <div className="flex border rounded-lg border-black h-8 items-center">
