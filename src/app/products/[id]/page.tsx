@@ -1,27 +1,46 @@
 import Image from "next/image";
+import type { Image as IImage } from "sanity";
+import { client } from "../../../../sanity/lib/client";
 import prodImg from "../../../../public/sample_prod.png";
+import { urlForImage } from "../../../../sanity/lib/image";
 import Count from "./Count";
 import { Button } from "@/components/ui/button";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 
+interface Product {
+  _id: string;
+  title: string;
+  category: string;
+  price: string;
+  description: string;
+  image: IImage;
+  image_thumbnail: IImage;
+}
+
+async function getData(id: string) {
+  let res = await client.fetch(`*[_type=="product"&&_id=="${id}"][0]`);
+  return res;
+}
+
 const page = async ({ params }: { params: { id: string } }) => {
   let id = params.id;
+  let data:Product = await getData(id);
 
   return (
     <>
       <div className="bg-[#FCFCFC] my-5 py-16 px-10 md:px-24 lg:px-32">
         <div className="w-full flex flex-wrap">
           <div className="w-[30%] md:w-[15%] px-5">
-            <Image src={prodImg} alt="Product" className="w-full" />
+            <Image src={urlForImage(data.image_thumbnail).url()} width={200} height={200} alt="Product" className="w-full" />
           </div>
           <div className="w-[70%] md:w-[55%]">
-            <Image src={prodImg} alt="Product" className="w-full" />
+            <Image src={urlForImage(data.image).url()} width={500} height={500} alt="Product" className="w-full" />
           </div>
           <div className="w-[100%] md:w-[30%] px-4 space-y-7 py-16">
             <h2 className="text-2xl tracking-wider">
-              Brushed Raglan Sweatshirt
+              {data.title}
               <br />
-              <span className="text-lg font-bold text-[#D7D7D9]">Sweater</span>
+              <span className="text-lg font-bold text-[#D7D7D9]">{data.category}</span>
             </h2>
             <div className="flex items-center">
               <h4 className="font-bold pr-5">Quantity:</h4>
@@ -51,15 +70,9 @@ const page = async ({ params }: { params: { id: string } }) => {
               <h2 className="font-bold text-gray-600">PRODUCT DETAILS</h2>
             </div>
             <div className="col-span-2 text-justify tracking-wide leading-7">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum.
+              {data.description}
             </div>
-            <div className="col-span-1">
+            {/* <div className="col-span-1">
               <h2 className="font-bold text-gray-600">PRODUCT CARE</h2>
             </div>
             <div className="col-span-2">
@@ -69,7 +82,7 @@ const page = async ({ params }: { params: { id: string } }) => {
                 <li>Hang it to dry.</li>
                 <li>Iron on low temperature.</li>
               </ul>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
