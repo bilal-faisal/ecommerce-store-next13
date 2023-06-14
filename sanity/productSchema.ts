@@ -32,6 +32,12 @@ export const productSchema = {
             name: "image_thumbnail",
             title: "Product Thumbnail Image",
             type: "image"
+        },
+        {
+            name: "product_care",
+            title: "Product Care",
+            type: "array",
+            of: [{ type: "string" }]
         }
     ]
 }
