@@ -24,7 +24,9 @@ export function Header() {
             <div className="w-full">
               <NavigationMenuList>
                 <NavigationMenuItem>
-                  <Image src={Logo} alt="Logo" className="mx-5" />
+                  <Link href={"/"}>
+                    <Image src={Logo} alt="Logo" className="mx-5" />
+                  </Link>
                 </NavigationMenuItem>
                 <div className="md:hidden">
                   <button
@@ -74,13 +76,19 @@ export function Header() {
             >
               <NavigationMenuList className="flex-col md:flex-row px-10 flex-shrink">
                 <NavigationMenuItem>
-                  <p className="my-1 md:my-0">Female</p>
+                  <Link href={"/female"}>
+                    <p className="my-1 md:my-0">Female</p>
+                  </Link>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <p className="my-1 md:my-0">Male</p>
+                  <Link href={"/male"}>
+                    <p className="my-1 md:my-0">Male</p>
+                  </Link>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <p className="my-1 md:my-0">Kids</p>
+                  <Link href={"/kids"}>
+                    <p className="my-1 md:my-0">Kids</p>
+                  </Link>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                   <Link href={"/products"}>
