@@ -12,8 +12,9 @@ interface Product {
   image_thumbnail: IImage;
 }
 
-async function getData() {
-  let res = await client.fetch(`*[_type=="product"] {
+async function getMaleData() {
+  let res =
+    await client.fetch(`*[_type=="product" && category->name match "Male"] {
     _id,
     title,
     type,
@@ -24,7 +25,7 @@ async function getData() {
 }
 
 const page = async () => {
-  let data = await getData();
+  let data = await getMaleData();
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 my-16 px-10 md:px-24 lg:px-32 gap-x-5">

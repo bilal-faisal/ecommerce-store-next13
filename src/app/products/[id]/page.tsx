@@ -1,7 +1,6 @@
 import Image from "next/image";
 import type { Image as IImage } from "sanity";
 import { client } from "../../../../sanity/lib/client";
-import prodImg from "../../../../public/sample_prod.png";
 import { urlForImage } from "../../../../sanity/lib/image";
 import Count from "./Count";
 import { Button } from "@/components/ui/button";
@@ -10,7 +9,7 @@ import { AiOutlineShoppingCart } from "react-icons/ai";
 interface Product {
   _id: string;
   title: string;
-  category: string;
+  type: string;
   price: string;
   description: string;
   image: IImage;
@@ -19,7 +18,16 @@ interface Product {
 }
 
 async function getData(id: string) {
-  let res = await client.fetch(`*[_type=="product"&&_id=="${id}"][0]`);
+  let res = await client.fetch(`*[_type=="product"&&_id=="${id}"][0] {
+    _id,
+    title,
+    type,
+    price,
+    description,
+    image,
+    image_thumbnail,
+    product_care,
+  }`);
   return res;
 }
 
@@ -46,7 +54,7 @@ const page = async ({ params }: { params: { id: string } }) => {
               width={500}
               height={500}
               alt="Product"
-              className="w-full"
+              className="w-full h-full max-h-64 md:max-h-[600px] object-cover object-top"
             />
           </div>
           <div className="w-[100%] md:w-[30%] px-4 space-y-7 py-16">
@@ -54,7 +62,7 @@ const page = async ({ params }: { params: { id: string } }) => {
               {data.title}
               <br />
               <span className="text-lg font-bold text-[#D7D7D9]">
-                {data.category}
+                {data.type}
               </span>
             </h2>
             <div className="flex items-center">
