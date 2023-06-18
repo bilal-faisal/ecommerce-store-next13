@@ -2,9 +2,7 @@ import Image from "next/image";
 import type { Image as IImage } from "sanity";
 import { client } from "../../../../sanity/lib/client";
 import { urlForImage } from "../../../../sanity/lib/image";
-import Count from "./Count";
-import { Button } from "@/components/ui/button";
-import { AiOutlineShoppingCart } from "react-icons/ai";
+import AddToCart from "./AddToCart";
 
 interface Product {
   _id: string;
@@ -65,17 +63,8 @@ const page = async ({ params }: { params: { id: string } }) => {
                 {data.type}
               </span>
             </h2>
-            <div className="flex items-center">
-              <h4 className="font-bold pr-5">Quantity:</h4>
-              <Count />
-            </div>
-            <div className="flex items-center">
-              <Button className="bg-[#212121] text-white font-semibold py-6 px-2 rounded-none w-[80%] md:w-[10rem] md:min-w-fit">
-                <AiOutlineShoppingCart className="text-3xl" />
-                <span className="pl-4">Add to Cart</span>
-              </Button>
-              <h2 className="text-2xl font-semibold px-4">$292</h2>
-            </div>
+
+            <AddToCart product_id={data._id} />
           </div>
         </div>
 
