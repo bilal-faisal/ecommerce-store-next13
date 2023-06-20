@@ -4,6 +4,7 @@ import { CartType } from "@/db/schema/cart";
 import { client } from "../../../sanity/lib/client";
 import { urlForImage } from "../../../sanity/lib/image";
 import type { Image as IImage } from "sanity";
+import Checkout from "./Checkout";
 
 interface Product {
   title: string;
@@ -23,9 +24,7 @@ async function getSanityData(id: string) {
 }
 
 export async function getData(user_id: string) {
-  let res = await fetch(`http://localhost:3000/api/cart?user_id=${user_id}`, {
-    cache: "no-store",
-  });
+  let res = await fetch(`http://localhost:3000/api/cart?user_id=${user_id}`);
   return res.json();
 }
 
@@ -33,8 +32,13 @@ const SubComp = async ({ user_id }: { user_id: string }) => {
   let data = await getData(user_id);
   let total = 0;
 
+  let allUserSelectedProducts: Product[] = [];
+
   let promises = data.map(async (item: CartType, i: number) => {
     let productData: Product = await getSanityData(item.product_id);
+    // @ts-ignore
+    productData = { quantity: item.quantity, ...productData };
+    allUserSelectedProducts.push(productData);
 
     total += Number(productData.price) * item.quantity;
     return (
@@ -50,7 +54,7 @@ const SubComp = async ({ user_id }: { user_id: string }) => {
         <h2 className="px-2">{productData.title}</h2>
         <div className="ml-auto w-fit text-right">
           <h2>${productData.price}</h2>
-          <h2>Quantity: {item.quantity}</h2>
+          <h2>Quantity: {productData.quantity}</h2>
         </div>
       </div>
     );
@@ -65,6 +69,7 @@ const SubComp = async ({ user_id }: { user_id: string }) => {
         <div>
           <h2 className="text-right">Total: ${total}</h2>
         </div>
+        <Checkout products={allUserSelectedProducts} />
       </div>
     </div>
   );
