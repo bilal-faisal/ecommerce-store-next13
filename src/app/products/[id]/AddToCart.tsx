@@ -8,7 +8,7 @@ import { AiOutlineShoppingCart } from "react-icons/ai";
 
 async function addProduct(product_id: string, count: number) {
   try {
-    const response = await fetch(`http://localhost:3000/api/cart`, {
+    const response = await fetch(`/api/cart`, {
       body: JSON.stringify({ product_id: product_id, quantity: count }),
       headers: {
         "Content-Type": "application/json",

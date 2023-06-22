@@ -112,7 +112,7 @@ export function Header() {
                     <Button className="my-2 md:my-0 relative bg-gray-200 text-black hover:bg-gray-300 hover:text-black  text-xl rounded-full p-2.5">
                       <AiOutlineShoppingCart />
                       <span className="cart-item-count absolute top-0.5 right-0 bg-red-500 text-white text-xs rounded-full h-3 w-3 flex items-center justify-center">
-                        1
+                        {/* 1 */}
                       </span>
                     </Button>
                   </Link>
