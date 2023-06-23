@@ -13,6 +13,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Data not found" });
     }
     try {
+        console.log(body)
         // Create Checkout Sessions from body params.
         const session = await stripe.checkout.sessions.create({
             submit_type: "pay",
@@ -45,8 +46,8 @@ export async function POST(req: NextRequest) {
             phone_number_collection: {
                 enabled: true
             },
-            success_url: `${req.headers.get("origin")}/?success=true`,
-            cancel_url: `${req.headers.get("origin")}/?canceled=true`,
+            success_url: `${req.headers.get("origin")}/success`,
+            cancel_url: `${req.headers.get("origin")}/cart`,
         });
         return NextResponse.json({ session });
     } catch (err: any) {
