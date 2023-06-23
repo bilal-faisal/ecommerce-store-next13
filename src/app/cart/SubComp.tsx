@@ -56,11 +56,13 @@ const SubComp = ({ user_id }: { user_id: string }) => {
       await Promise.all(
         data.map(async (item: CartType) => {
           let productData: Product = await getSanityData(item.product_id);
-          console.log("---------");
-          console.log(productData);
-          console.log("---------");
-          // @ts-ignore
-          productData = { quantity: item.quantity, ...productData };
+          productData = {
+            // @ts-ignore
+            quantity: item.quantity,
+            // // @ts-ignore
+            // user_id: user_id,
+            ...productData,
+          };
           allProducts.push(productData);
         })
       );
@@ -87,7 +89,11 @@ const SubComp = ({ user_id }: { user_id: string }) => {
           <Image src={Loader} alt="Loader..." className="mx-auto"></Image>
         )}
 
-        {!loading && (
+        {!loading && allUserSelectedProducts.length == 0 ? (
+          <div className="my-16 px-10 md:px-24 lg:px-32 h-1/2">
+            <h2 className="text-2xl">You have currently no items in cart</h2>
+          </div>
+        ) : (
           <>
             {allUserSelectedProducts.map((product, i) => {
               return (

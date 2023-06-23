@@ -26,6 +26,7 @@ const Checkout = ({ products }: { products: Product[] }) => {
       stripe?.redirectToCheckout({ sessionId: data.session.id });
     }
   };
+  
   return (
     <div className="w-full flex">
       <button
