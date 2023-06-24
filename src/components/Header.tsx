@@ -76,22 +76,22 @@ export function Header() {
             >
               <NavigationMenuList className="flex-col md:flex-row px-10 flex-shrink">
                 <NavigationMenuItem>
-                  <Link href={"/female"}>
+                  <Link href={"/female"} onClick={() => setNavbar(false)}>
                     <p className="my-1 md:my-0">Female</p>
                   </Link>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <Link href={"/male"}>
+                  <Link href={"/male"} onClick={() => setNavbar(false)}>
                     <p className="my-1 md:my-0">Male</p>
                   </Link>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <Link href={"/kids"}>
+                  <Link href={"/kids"} onClick={() => setNavbar(false)}>
                     <p className="my-1 md:my-0">Kids</p>
                   </Link>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <Link href={"/products"}>
+                  <Link href={"/products"} onClick={() => setNavbar(false)}>
                     <p className="mt-1 mb-2 md:my-0">All Products</p>
                   </Link>
                 </NavigationMenuItem>
@@ -108,7 +108,7 @@ export function Header() {
                   </div>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <Link href={"/cart"}>
+                  <Link href={"/cart"} onClick={() => setNavbar(false)}>
                     <Button className="my-2 md:my-0 relative bg-gray-200 text-black hover:bg-gray-300 hover:text-black  text-xl rounded-full p-2.5">
                       <AiOutlineShoppingCart />
                       <span className="cart-item-count absolute top-0.5 right-0 bg-red-500 text-white text-xs rounded-full h-3 w-3 flex items-center justify-center">
