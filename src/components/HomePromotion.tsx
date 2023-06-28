@@ -41,7 +41,7 @@ const HomePromotion = () => {
           <div className="pt-5 pl-4">
             <p>Flex Sweatshirt</p>
             <p>
-              <s>$100.00</s> <span className="font-semibold">$75.00</span>
+              <s>Rs 100.00</s> <span className="font-semibold">Rs 75.00</span>
             </p>
           </div>
           <Image src={e2_img} alt="Logo" className="mx-auto" width={230} />
@@ -51,7 +51,7 @@ const HomePromotion = () => {
           <div className="pt-5 pl-4">
             <p>Flex Sweatshirt</p>
             <p>
-              <s>$100.00</s> <span className="font-semibold">$75.00</span>
+              <s>Rs 100.00</s> <span className="font-semibold">Rs 75.00</span>
             </p>
           </div>
           <Image src={e3_img} alt="Logo" className="mx-auto" width={230} />

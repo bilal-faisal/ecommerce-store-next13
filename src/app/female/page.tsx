@@ -45,7 +45,7 @@ const page = async () => {
                   {item.title}
                 </h2>
                 <h2 className="font-bold text-[#D7D7D9]">{item.type}</h2>
-                <h2 className="text-lg font-semibold my-1">${item.price}</h2>
+                <h2 className="text-lg font-semibold my-1">Rs {item.price}</h2>
               </Link>
             </div>
           );

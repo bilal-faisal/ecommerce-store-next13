@@ -24,7 +24,7 @@ const HomeProducts = () => {
             <h2 className="text-lg font-bold pt-3">
               Brushed Raglan Sweatshirt
             </h2>
-            <h2 className="text-lg font-bold">$195</h2>
+            <h2 className="text-lg font-bold">Rs 195</h2>
           </Link>
         </div>
         <div className="z-10 w-full md:w-1/3 transform transition-transform hover:scale-110 duration-500 cursor-pointer">
@@ -35,7 +35,7 @@ const HomeProducts = () => {
               className="object-cover w-full h-full max-h-64 md:max-h-96"
             />
             <h2 className="text-lg font-bold pt-3">Cameryn Sash Tie Dress</h2>
-            <h2 className="text-lg font-bold">$545</h2>
+            <h2 className="text-lg font-bold">Rs 545</h2>
           </Link>
         </div>
         <div className="z-20 w-full md:w-1/3 transform transition-transform hover:scale-110 duration-500 cursor-pointer">
@@ -46,7 +46,7 @@ const HomeProducts = () => {
               className="object-cover w-full h-full max-h-64 md:max-h-96"
             />
             <h2 className="text-lg font-bold pt-3">Flex Sweatshirt</h2>
-            <h2 className="text-lg font-bold">$175</h2>
+            <h2 className="text-lg font-bold">Rs 175</h2>
           </Link>
         </div>
       </div>
