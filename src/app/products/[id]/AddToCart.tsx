@@ -2,11 +2,16 @@
 import React from "react";
 import { BiMinus } from "react-icons/bi";
 import { BsPlus } from "react-icons/bs";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { AiOutlineShoppingCart } from "react-icons/ai";
+import Alert from "@/components/Alert";
 
-async function addProduct(product_id: string, count: number) {
+async function addProduct(
+  product_id: string,
+  count: number,
+  setShowAlert: any
+) {
   try {
     const response = await fetch(`/api/cart`, {
       body: JSON.stringify({ product_id: product_id, quantity: count }),
@@ -18,15 +23,33 @@ async function addProduct(product_id: string, count: number) {
     if (!response.ok) {
       throw new Error("Something went wrong");
     } else {
-      alert("Product added to cart");
+      setShowAlert(true);
     }
   } catch (e) {
     console.log(e);
   }
 }
 
-const AddToCart = ({ product_id }: { product_id: string }) => {
+const AddToCart = ({
+  product_id,
+  product_price,
+}: {
+  product_id: string;
+  product_price: string;
+}) => {
   let [count, setCount] = useState(1);
+  let [showAlert, setShowAlert] = useState(false);
+  useEffect(() => {
+    if (showAlert) {
+      const timer = setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [showAlert]);
   return (
     <>
       <div className="flex items-center">
@@ -48,14 +71,15 @@ const AddToCart = ({ product_id }: { product_id: string }) => {
       </div>
       <div className="flex items-center">
         <Button
-          onClick={() => addProduct(product_id, count)}
-          className="bg-[#212121] text-white font-semibold py-6 px-2 rounded-none w-[80%] md:w-[10rem] md:min-w-fit"
+          onClick={() => addProduct(product_id, count, setShowAlert)}
+          className="bg-[#212121] text-white font-semibold py-6 px-2 rounded-none w-[80%] md:w-[10rem] md:min-w-fit hover:bg-[#181818]"
         >
           <AiOutlineShoppingCart className="text-3xl" />
           <span className="pl-4">Add to Cart</span>
         </Button>
+        {showAlert && <Alert message="Product added to cart" type="success" />}
 
-        <h2 className="text-2xl font-semibold px-4">$292</h2>
+        <h2 className="text-2xl font-semibold px-4">Rs {product_price}</h2>
       </div>
     </>
   );

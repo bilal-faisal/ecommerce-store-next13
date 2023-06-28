@@ -1,6 +1,8 @@
 "use client";
 import type { Image as IImage } from "sanity";
 import getStripePromise from "@/lib/stripe";
+import { useState, useEffect } from "react";
+import Alert from "@/components/Alert";
 
 interface Product {
   title: string;
@@ -10,8 +12,23 @@ interface Product {
 }
 
 const Checkout = ({ products }: { products: Product[] }) => {
+  let [showAlert, setShowAlert] = useState(false);
+  useEffect(() => {
+    if (showAlert) {
+      const timer = setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [showAlert]);
   const handleCheckout = async () => {
-    console.log(getStripePromise);
+    products = products.filter((prod) => prod.quantity != 0);
+    if (products.length == 0) {
+      setShowAlert(true);
+    }
     const stripe = await getStripePromise();
     const res = await fetch("/api/stripe-session", {
       method: "POST",
@@ -26,7 +43,7 @@ const Checkout = ({ products }: { products: Product[] }) => {
       stripe?.redirectToCheckout({ sessionId: data.session.id });
     }
   };
-  
+
   return (
     <div className="w-full flex">
       <button
@@ -35,6 +52,7 @@ const Checkout = ({ products }: { products: Product[] }) => {
       >
         Checkout
       </button>
+      {showAlert && <Alert message="Cart is empty" type="warning"/>}
     </div>
   );
 };
