@@ -91,7 +91,7 @@ const SubComp = ({ user_id }: { user_id: string }) => {
 
         {!loading && allUserSelectedProducts.length == 0 ? (
           <div className="my-16 px-10 md:px-24 lg:px-32 h-1/2">
-            <h2 className="text-2xl">You have currently no items in cart</h2>
+            <h2 className="text-2xl text-center">You have currently no items in cart</h2>
           </div>
         ) : (
           <>
@@ -135,7 +135,7 @@ const SubComp = ({ user_id }: { user_id: string }) => {
                       <div
                         className="text-xs p-1 border-2 border-gray-800 rounded-full hover:cursor-pointer"
                         onClick={() => {
-                          if (product.quantity > 1) {
+                          if (product.quantity > 0) {
                             --allUserSelectedProducts[i].quantity;
                             setAllUserSelectedProducts([
                               ...allUserSelectedProducts,
@@ -150,7 +150,7 @@ const SubComp = ({ user_id }: { user_id: string }) => {
                   </div>
                   <div className="ml-auto w-fit text-right">
                     <h2>
-                      {product.quantity} x ${product.price}
+                      {product.quantity} x {product.price}
                     </h2>
                   </div>
                 </div>
@@ -158,7 +158,7 @@ const SubComp = ({ user_id }: { user_id: string }) => {
             })}
 
             <div>
-              <h2 className="text-right">Total: ${total}</h2>
+              <h2 className="text-right">Total: Rs {total}</h2>
             </div>
             <Checkout products={allUserSelectedProducts} />
           </>

@@ -61,8 +61,8 @@ const Page = () => {
   return (
     <>
       {!userId ? (
-        <div className="my-16 px-10 md:px-24 lg:px-32 h-1/2">
-          <h2 className="text-2xl">You have currently no items in cart</h2>
+        <div className="my-32 px-10 md:px-24 lg:px-32 h-1/2">
+          <h2 className="text-2xl text-center">You have currently no items in cart</h2>
         </div>
       ) : (
         <>
