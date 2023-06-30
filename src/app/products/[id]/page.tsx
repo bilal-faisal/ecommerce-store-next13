@@ -46,7 +46,7 @@ const page = async ({ params }: { params: { id: string } }) => {
               className="w-full"
             />
           </div>
-          <div className="w-[70%] md:w-[55%]">
+          <div className="w-[70%] md:w-[52%]">
             <Image
               src={urlForImage(data.image).url()}
               width={500}
@@ -55,7 +55,7 @@ const page = async ({ params }: { params: { id: string } }) => {
               className="w-full h-full max-h-64 md:max-h-[600px] object-cover object-top"
             />
           </div>
-          <div className="w-[100%] md:w-[30%] px-4 space-y-7 py-16">
+          <div className="w-[100%] md:w-[33%] pl-6 pr-2 space-y-7 py-16">
             <h2 className="text-2xl tracking-wider">
               {data.title}
               <br />
@@ -64,7 +64,7 @@ const page = async ({ params }: { params: { id: string } }) => {
               </span>
             </h2>
 
-            <AddToCart product_id={data._id} />
+            <AddToCart product_id={data._id} product_price={data.price} />
           </div>
         </div>
 
