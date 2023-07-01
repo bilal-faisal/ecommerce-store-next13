@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import Alert from "@/components/Alert";
 import {
-  updateCartItemCountLocalHostVariable,
-  updateUserCartProductsLocalHostVariable,
+  updateCartItemCountLocalStorageVariable,
+  updateUserCartProductsLocalStorageVariable,
 } from "@/components/CartUtils";
 
 function updateLocalhost(product_id: string, count: number) {
@@ -29,10 +29,10 @@ function updateLocalhost(product_id: string, count: number) {
   if (!productFound) {
     updatedUserCartProducts.push({ product_id, quantity: count });
   }
-  updateUserCartProductsLocalHostVariable(updatedUserCartProducts);
-  
+  updateUserCartProductsLocalStorageVariable(updatedUserCartProducts);
+
   if (!productFound) {
-    updateCartItemCountLocalHostVariable(updatedUserCartProducts.length);
+    updateCartItemCountLocalStorageVariable(updatedUserCartProducts.length);
 
     const cartCountChangeEvent = new Event("cartCountChange");
     window.dispatchEvent(cartCountChangeEvent);

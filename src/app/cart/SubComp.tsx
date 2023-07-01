@@ -8,7 +8,7 @@ import type { Image as IImage } from "sanity";
 import React, { useState, useEffect } from "react";
 import { urlForImage } from "../../../sanity/lib/image";
 import Loader from "../../../public/Loading_icon.gif";
-import { updateUserCartProductsLocalHostVariable } from "@/components/CartUtils";
+import { updateUserCartProductsLocalStorageVariable } from "@/components/CartUtils";
 
 interface Product {
   title: string;
@@ -31,7 +31,7 @@ function updateLocalhost(product_id: string, count: number) {
     }
     return { product_id: prod.product_id, quantity: prod.quantity };
   });
-  updateUserCartProductsLocalHostVariable(updatedUserProducts);
+  updateUserCartProductsLocalStorageVariable(updatedUserProducts);
 
   return updatedUserProducts;
 }
@@ -67,7 +67,7 @@ async function getData(user_id: string) {
     let updatedUserProducts = data.map((prod) => {
       return { product_id: prod.product_id, quantity: prod.quantity };
     });
-    updateUserCartProductsLocalHostVariable(updatedUserProducts);
+    updateUserCartProductsLocalStorageVariable(updatedUserProducts);
     return data;
   }
 }
@@ -106,7 +106,7 @@ const SubComp = ({ user_id }: { user_id: string }) => {
       let initialUserProducts = allProducts.map((prod) => {
         return { product_id: prod.product_id, quantity: prod.quantity };
       });
-      updateUserCartProductsLocalHostVariable(initialUserProducts);
+      updateUserCartProductsLocalStorageVariable(initialUserProducts);
     };
 
     fetchProducts();
