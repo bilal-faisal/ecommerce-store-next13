@@ -2,6 +2,7 @@
 import Link from "next/link";
 import React from "react";
 import Cookie from "js-cookie";
+import { updateCartItemCount } from "@/components/CartUtils";
 
 // function getUserId() {
 //   const user_id = Cookie.get("user_id");
@@ -17,9 +18,16 @@ async function deleteData() {
       method: "DELETE",
       cache: "no-cache",
     });
-    return req;
+    if (!req.ok) {
+      return { error: "Unexpected error" };
+    } else {
+      updateCartItemCount(0);
+
+      const cartCountChangeEvent = new Event("cartCountChange");
+      window.dispatchEvent(cartCountChangeEvent);
+      return req;
+    }
   }
-  return { error: "Unexpected error" };
 }
 
 const page = async () => {

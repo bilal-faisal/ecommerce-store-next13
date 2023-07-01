@@ -11,11 +11,28 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import Logo from "/public/logo.png";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
 export function Header() {
   const [navbar, setNavbar] = useState(false);
+  const [cartItemCount, setCartItemCount] = useState(0);
+
+  useEffect(() => {
+    setCartItemCount(Number(localStorage.getItem("cartItemCount")) || 0);
+
+    const handleCartCountChange = () => {
+      const count = Number(localStorage.getItem("cartItemCount")) || 0;
+      setCartItemCount(count);
+    };
+
+    window.addEventListener("cartCountChange", handleCartCountChange);
+
+    // return () => {
+    //   window.removeEventListener("cartCountChange", handleCartCountChange);
+    // };
+  }, []);
+
   return (
     <div className="w-full">
       <NavigationMenu className="pt-8">
@@ -112,7 +129,7 @@ export function Header() {
                     <Button className="my-2 md:my-0 relative bg-gray-200 text-black hover:bg-gray-300 hover:text-black  text-xl rounded-full p-2.5">
                       <AiOutlineShoppingCart />
                       <span className="cart-item-count absolute top-0.5 right-0 bg-red-500 text-white text-xs rounded-full h-3 w-3 flex items-center justify-center">
-                        {/* 1 */}
+                        {cartItemCount}
                       </span>
                     </Button>
                   </Link>

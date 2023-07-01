@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import Alert from "@/components/Alert";
+import { updateCartItemCount } from "@/components/CartUtils";
 
 async function addProduct(
   product_id: string,
@@ -24,6 +25,13 @@ async function addProduct(
       throw new Error("Something went wrong");
     } else {
       setShowAlert(true);
+
+      // only update if new product is added
+      const cartItemCount = Number(localStorage.getItem("cartItemCount")) || 0;
+      updateCartItemCount(cartItemCount + 1);
+
+      const cartCountChangeEvent = new Event("cartCountChange");
+      window.dispatchEvent(cartCountChangeEvent);
     }
   } catch (e) {
     console.log(e);
