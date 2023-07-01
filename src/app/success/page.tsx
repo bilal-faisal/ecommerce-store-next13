@@ -3,8 +3,8 @@ import Link from "next/link";
 import React from "react";
 import Cookie from "js-cookie";
 import {
-  updateCartItemCountLocalHostVariable,
-  updateUserCartProductsLocalHostVariable,
+  updateCartItemCountLocalStorageVariable,
+  updateUserCartProductsLocalStorageVariable,
 } from "@/components/CartUtils";
 
 async function deleteData() {
@@ -17,8 +17,8 @@ async function deleteData() {
     if (!req.ok) {
       return { error: "Unexpected error" };
     } else {
-      updateCartItemCountLocalHostVariable(0);
-      updateUserCartProductsLocalHostVariable([]);
+      updateCartItemCountLocalStorageVariable(0);
+      updateUserCartProductsLocalStorageVariable([]);
 
       const cartCountChangeEvent = new Event("cartCountChange");
       window.dispatchEvent(cartCountChangeEvent);
