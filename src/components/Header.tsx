@@ -19,11 +19,15 @@ export function Header() {
   const [cartItemCount, setCartItemCount] = useState(0);
 
   useEffect(() => {
-    setCartItemCount(Number(localStorage.getItem("cartItemCount")) || 0);
+    // setCartItemCount(Number(localStorage.getItem("cartItemCount")) || 0);
+    setCartItemCount(
+      JSON.parse(localStorage.getItem("userCartProducts") || "[]").length
+    );
 
     const handleCartCountChange = () => {
-      const count = Number(localStorage.getItem("cartItemCount")) || 0;
-      setCartItemCount(count);
+      setCartItemCount(
+        JSON.parse(localStorage.getItem("userCartProducts") || "[]").length
+      );
     };
 
     window.addEventListener("cartCountChange", handleCartCountChange);

@@ -6,7 +6,36 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import Alert from "@/components/Alert";
-import { updateCartItemCount } from "@/components/CartUtils";
+import {
+  updateCartItemCountLocalHostVariable,
+  updateUserCartProductsLocalHostVariable,
+} from "@/components/CartUtils";
+
+function updateLocalhost(product_id: string, count: number) {
+  let initialUserCartProducts: { product_id: string; quantity: number }[] =
+    JSON.parse(localStorage.getItem("userCartProducts") || "[]");
+
+  let productFound = false;
+  let updatedUserCartProducts = initialUserCartProducts.map((prod) => {
+    if (prod.product_id == product_id) {
+      productFound = true;
+      return {
+        product_id: prod.product_id,
+        quantity: prod.quantity + count,
+      };
+    }
+    return { product_id: prod.product_id, quantity: prod.quantity };
+  });
+  if (!productFound) {
+    updatedUserCartProducts.push({ product_id, quantity: count });
+
+    updateCartItemCountLocalHostVariable(updatedUserCartProducts.length);
+
+    const cartCountChangeEvent = new Event("cartCountChange");
+    window.dispatchEvent(cartCountChangeEvent);
+  }
+  updateUserCartProductsLocalHostVariable(updatedUserCartProducts);
+}
 
 async function addProduct(
   product_id: string,
@@ -25,13 +54,7 @@ async function addProduct(
       throw new Error("Something went wrong");
     } else {
       setShowAlert(true);
-
-      // only update if new product is added
-      const cartItemCount = Number(localStorage.getItem("cartItemCount")) || 0;
-      updateCartItemCount(cartItemCount + 1);
-
-      const cartCountChangeEvent = new Event("cartCountChange");
-      window.dispatchEvent(cartCountChangeEvent);
+      updateLocalhost(product_id, count);
     }
   } catch (e) {
     console.log(e);

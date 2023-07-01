@@ -2,15 +2,11 @@
 import Link from "next/link";
 import React from "react";
 import Cookie from "js-cookie";
-import { updateCartItemCount } from "@/components/CartUtils";
+import {
+  updateCartItemCountLocalHostVariable,
+  updateUserCartProductsLocalHostVariable,
+} from "@/components/CartUtils";
 
-// function getUserId() {
-//   const user_id = Cookie.get("user_id");
-//   if (!user_id) {
-//     return { user_id: null };
-//   }
-//   return { user_id };
-// }
 async function deleteData() {
   const user_id = Cookie.get("user_id");
   if (user_id) {
@@ -21,7 +17,8 @@ async function deleteData() {
     if (!req.ok) {
       return { error: "Unexpected error" };
     } else {
-      updateCartItemCount(0);
+      updateCartItemCountLocalHostVariable(0);
+      updateUserCartProductsLocalHostVariable([]);
 
       const cartCountChangeEvent = new Event("cartCountChange");
       window.dispatchEvent(cartCountChangeEvent);
