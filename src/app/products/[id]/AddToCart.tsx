@@ -28,13 +28,15 @@ function updateLocalhost(product_id: string, count: number) {
   });
   if (!productFound) {
     updatedUserCartProducts.push({ product_id, quantity: count });
-
+  }
+  updateUserCartProductsLocalHostVariable(updatedUserCartProducts);
+  
+  if (!productFound) {
     updateCartItemCountLocalHostVariable(updatedUserCartProducts.length);
 
     const cartCountChangeEvent = new Event("cartCountChange");
     window.dispatchEvent(cartCountChangeEvent);
   }
-  updateUserCartProductsLocalHostVariable(updatedUserCartProducts);
 }
 
 async function addProduct(
