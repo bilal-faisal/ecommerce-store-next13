@@ -1,13 +1,14 @@
 import HomeBanner from "@/components/HomeBanner";
-import HomeProducts from "@/components/HomeProducts";
 import HomePromotion from "@/components/HomePromotion";
+import HomeSlider from "@/components/HomeSlider";
 
 const Home = () => {
   return (
     <div>
       <HomeBanner />
       <HomePromotion />
-      <HomeProducts />
+      {/* @ts-ignore  */}
+      <HomeSlider />
     </div>
   );
 };
