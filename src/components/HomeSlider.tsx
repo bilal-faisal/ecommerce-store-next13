@@ -17,14 +17,8 @@ interface Product {
 }
 
 async function getData() {
-  let res = await client.fetch(`*[_type=="product"] {
-      _id,
-      title,
-      type,
-      price,
-      image_thumbnail
-    }`);
-  return res;
+  let req = await fetch("/api/sanity");
+  return req.json();
 }
 
 const HomeSlider = () => {
@@ -119,9 +113,7 @@ const HomeSlider = () => {
                     height={300}
                     className="object-cover object-top max-h-64"
                   />
-                  <h2 className="font-bold pt-3">
-                    {data[index].title}
-                  </h2>
+                  <h2 className="font-bold pt-3">{data[index].title}</h2>
                   <h2 className="font-bold">Rs {data[index].price}</h2>
                 </Link>
               </div>
