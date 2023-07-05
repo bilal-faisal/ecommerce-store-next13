@@ -25,6 +25,23 @@ export async function GET(req: NextRequest) {
     }
 }
 
+export async function PATCH(req: NextRequest) {
+    const body = await req.json();
+    let user_id = body.user_id;
+
+    if (!user_id) {
+        user_id = cookies().get("user_id")?.value as string;
+        if (!user_id) {
+            return NextResponse.json({ "error": "user_id not provided" });
+        }
+    } else {
+        // and user id
+        const res = await db.delete(cart).where(and(eq(cart.product_id, body.product_id), (eq(cart.user_id, user_id))));
+        return NextResponse.json(res);
+    }
+}
+
+
 export async function POST(req: NextRequest) {
     const body = await req.json();
     let user_id = cookies().get("user_id")?.value;

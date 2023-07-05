@@ -8,7 +8,11 @@ import type { Image as IImage } from "sanity";
 import React, { useState, useEffect } from "react";
 import { urlForImage } from "../../../sanity/lib/image";
 import Loader from "../../../public/Loading_icon.gif";
-import { updateUserCartProductsLocalStorageVariable } from "@/components/CartUtils";
+import Alert from "@/components/Alert";
+import {
+  updateUserCartProductsLocalStorageVariable,
+  updateCartItemCountLocalStorageVariable,
+} from "@/components/CartUtils";
 
 interface Product {
   title: string;
@@ -72,13 +76,45 @@ async function getData(user_id: string) {
   }
 }
 
+async function deleteProduct(product_id: string, user_id: string) {
+  try {
+    const response = await fetch(`/api/cart`, {
+      body: JSON.stringify({ product_id: product_id, user_id: user_id }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "PATCH",
+    });
+    if (!response.ok) {
+      alert("wrong");
+      throw new Error("Something went wrong");
+    } else {
+      //
+    }
+  } catch (e) {
+    console.log(e);
+  }
+}
+
 const SubComp = ({ user_id }: { user_id: string }) => {
   const [allUserSelectedProducts, setAllUserSelectedProducts] = useState<
     Product[]
   >([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
+  let [showAlert, setShowAlert] = useState(false);
 
+  useEffect(() => {
+    if (showAlert) {
+      const timer = setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [showAlert]);
   useEffect(() => {
     const fetchProducts = async () => {
       let data = await getData(user_id);
@@ -179,7 +215,37 @@ const SubComp = ({ user_id }: { user_id: string }) => {
                       <div
                         className="text-xs p-1 border-2 border-gray-800 rounded-full hover:cursor-pointer"
                         onClick={() => {
-                          if (product.quantity > 0) {
+                          if (product.quantity == 1) {
+                            let updatedProducts =
+                              allUserSelectedProducts.filter(
+                                (prod) => prod.product_id != product.product_id
+                              );
+                            setAllUserSelectedProducts(updatedProducts);
+                            calculateTotal(updatedProducts);
+
+                            updateUserCartProductsLocalStorageVariable(
+                              updatedProducts.map((prod) => {
+                                return {
+                                  product_id: prod.product_id,
+                                  quantity: prod.quantity,
+                                };
+                              })
+                            );
+
+                            setShowAlert(true);
+
+                            // updating cart icon count
+                            updateCartItemCountLocalStorageVariable(
+                              updatedProducts.length
+                            );
+                            const cartCountChangeEvent = new Event(
+                              "cartCountChange"
+                            );
+                            window.dispatchEvent(cartCountChangeEvent);
+
+                            // remove from db
+                            deleteProduct(product.product_id, user_id);
+                          } else if (product.quantity > 0) {
                             --allUserSelectedProducts[i].quantity;
                             setAllUserSelectedProducts([
                               ...allUserSelectedProducts,
@@ -210,6 +276,9 @@ const SubComp = ({ user_id }: { user_id: string }) => {
             </div>
             <Checkout products={allUserSelectedProducts} />
           </>
+        )}
+        {showAlert && (
+          <Alert message="Product removed from cart" type="success" />
         )}
       </div>
     </div>
