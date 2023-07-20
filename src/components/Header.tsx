@@ -13,10 +13,13 @@ import Image from "next/image";
 import Logo from "/public/logo.png";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export function Header() {
+  const { push } = useRouter();
   const [navbar, setNavbar] = useState(false);
   const [cartItemCount, setCartItemCount] = useState(0);
+  // const [searchProd, setSearchProd] = useState("");
 
   useEffect(() => {
     // setCartItemCount(Number(localStorage.getItem("cartItemCount")) || 0);
@@ -125,13 +128,18 @@ export function Header() {
                       type="text"
                       placeholder="What you looking for"
                       className="border-none h-6"
+                      // value={searchProd}
+                      onChange={(e) => {
+                        // setSearchProd(e.target.value);
+                        push(`/search?name=${e.target.value}`);
+                      }}
                     />
                   </div>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                   <Link href={"/cart"} onClick={() => setNavbar(false)}>
                     <Button className="my-3 md:my-0 relative bg-gray-200 text-black hover:bg-gray-300 hover:text-black rounded-full p-2.5">
-                      <AiOutlineShoppingCart className="text-xl"/>
+                      <AiOutlineShoppingCart className="text-xl" />
                       {cartItemCount != 0 && (
                         <div className="absolute top-0.5 -right-2 bg-[#F02D34] text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
                           <p>{cartItemCount}</p>
