@@ -3,17 +3,14 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 
 export interface CounterState {
     products: Array<any>;
-    totalAmount: number;
     totalQuanty: number;
 }
 
-let savedProducts: { product_id: string; quantity: number }[] =
-    JSON.parse(localStorage.getItem("userCartProducts") || "[]");
-let savedQuanty: number = JSON.parse(localStorage.getItem("userCartProducts") || "[]").length
+let savedProducts: { product_id: string; quantity: number }[] = typeof window !== "undefined" ? JSON.parse(window.localStorage.getItem("userCartProducts") || "[]") : [];
+let savedQuanty: number = typeof window !== "undefined" ? JSON.parse(window.localStorage.getItem("userCartProducts") || "[]").length : 0;
 
 const initialState: CounterState = {
     products: savedProducts || [],
-    totalAmount: 0,
     totalQuanty: savedQuanty || 0,
 };
 
@@ -58,14 +55,15 @@ export const cartSlice = createSlice({
                 return prod;
             });
             state.products = updatedUserCartProducts;
-
-            // if (actions.payload.quantity < 99) {
-            //     ++allUserSelectedProducts[i].quantity;
-            //     setAllUserSelectedProducts([
-            //       ...allUserSelectedProducts,
-            //     ]);
-            //     // calculateTotal(allUserSelectedProducts);
-            //   }
+        },
+        decreaseProductQuantity: (state, actions: PayloadAction<any>) => {
+            let updatedUserCartProducts = state.products.map((prod) => {
+                if (prod.product_id == actions.payload.product_id) {
+                    prod.quantity = prod.quantity - 1;
+                }
+                return prod;
+            });
+            state.products = updatedUserCartProducts;
         }
     },
 })

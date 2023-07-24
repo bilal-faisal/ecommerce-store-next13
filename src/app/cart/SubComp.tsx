@@ -13,6 +13,8 @@ import {
   updateUserCartProductsLocalStorageVariable,
   updateCartItemCountLocalStorageVariable,
 } from "@/components/CartUtils";
+import { useDispatch } from "react-redux";
+import { cartActions } from "@/store/slice/cartSlice";
 
 interface Product {
   title: string;
@@ -76,7 +78,11 @@ async function getData(user_id: string) {
   }
 }
 
-async function deleteProduct(product_id: string, user_id: string) {
+async function deleteProduct(
+  product_id: string,
+  user_id: string,
+  dispatch: any
+) {
   try {
     const response = await fetch(`/api/cart`, {
       body: JSON.stringify({ product_id: product_id, user_id: user_id }),
@@ -89,7 +95,7 @@ async function deleteProduct(product_id: string, user_id: string) {
       alert("wrong");
       throw new Error("Something went wrong");
     } else {
-      //
+      dispatch(cartActions.removeFromCart({ product_id }));
     }
   } catch (e) {
     console.log(e);
@@ -104,6 +110,7 @@ const SubComp = ({ user_id }: { user_id: string }) => {
   const [loading, setLoading] = useState(true);
   let [showAlert, setShowAlert] = useState(false);
 
+  const dispatch = useDispatch();
   useEffect(() => {
     if (showAlert) {
       const timer = setTimeout(() => {
@@ -244,7 +251,11 @@ const SubComp = ({ user_id }: { user_id: string }) => {
                             window.dispatchEvent(cartCountChangeEvent);
 
                             // remove from db
-                            deleteProduct(product.product_id, user_id);
+                            deleteProduct(
+                              product.product_id,
+                              user_id,
+                              dispatch
+                            );
                           } else if (product.quantity > 0) {
                             --allUserSelectedProducts[i].quantity;
                             setAllUserSelectedProducts([

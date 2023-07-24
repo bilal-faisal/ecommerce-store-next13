@@ -10,7 +10,6 @@ import {
   updateCartItemCountLocalStorageVariable,
   updateUserCartProductsLocalStorageVariable,
 } from "@/components/CartUtils";
-
 import { useDispatch } from "react-redux";
 import { cartActions } from "@/store/slice/cartSlice";
 
@@ -90,6 +89,7 @@ const AddToCart = ({
       };
     }
   }, [showAlert]);
+  
   return (
     <>
       <div className="flex items-center">
