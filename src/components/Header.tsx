@@ -15,7 +15,13 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+
 export function Header() {
+  const cartValue = useSelector(
+    (state: RootState) => state.cartSlice.totalQuanty
+  );
   const { push } = useRouter();
   const [navbar, setNavbar] = useState(false);
   const [cartItemCount, setCartItemCount] = useState(0);
@@ -140,9 +146,11 @@ export function Header() {
                   <Link href={"/cart"} onClick={() => setNavbar(false)}>
                     <Button className="my-3 md:my-0 relative bg-gray-200 text-black hover:bg-gray-300 hover:text-black rounded-full p-2.5">
                       <AiOutlineShoppingCart className="text-xl" />
-                      {cartItemCount != 0 && (
+                      {/* {cartItemCount != 0 && ( */}
+                      {cartValue != 0 && (
                         <div className="absolute top-0.5 -right-2 bg-[#F02D34] text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                          <p>{cartItemCount}</p>
+                          {/* <p>{cartItemCount}</p> */}
+                          <p>{cartValue}</p>
                         </div>
                       )}
                     </Button>

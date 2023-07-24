@@ -1,11 +1,24 @@
 import { configureStore } from '@reduxjs/toolkit'
 import counterSlice from './slice/counterSlice'
+import cartSlice from './slice/cartSlice'
+import {
+    updateCartItemCountLocalStorageVariable,
+    updateUserCartProductsLocalStorageVariable,
+} from "@/components/CartUtils";
+
 
 export const store = configureStore({
     reducer: {
-        counterSlice,
+        counterSlice, cartSlice
     },
 })
+
+store.subscribe(() => {
+    const state = store.getState();
+    updateUserCartProductsLocalStorageVariable(state.cartSlice.products);
+    updateCartItemCountLocalStorageVariable(state.cartSlice.totalQuanty);
+});
+
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>

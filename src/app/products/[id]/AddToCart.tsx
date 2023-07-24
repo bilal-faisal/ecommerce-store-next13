@@ -11,6 +11,9 @@ import {
   updateUserCartProductsLocalStorageVariable,
 } from "@/components/CartUtils";
 
+import { useDispatch } from "react-redux";
+import { cartActions } from "@/store/slice/cartSlice";
+
 function updateLocalhost(product_id: string, count: number) {
   let initialUserCartProducts: { product_id: string; quantity: number }[] =
     JSON.parse(localStorage.getItem("userCartProducts") || "[]");
@@ -42,7 +45,8 @@ function updateLocalhost(product_id: string, count: number) {
 async function addProduct(
   product_id: string,
   count: number,
-  setShowAlert: any
+  setShowAlert: any,
+  dispatch: any
 ) {
   try {
     const response = await fetch(`/api/cart`, {
@@ -56,7 +60,8 @@ async function addProduct(
       throw new Error("Something went wrong");
     } else {
       setShowAlert(true);
-      updateLocalhost(product_id, count);
+      // updateLocalhost(product_id, count);
+      dispatch(cartActions.addToCart({ product_id, count }));
     }
   } catch (e) {
     console.log(e);
@@ -70,6 +75,8 @@ const AddToCart = ({
   product_id: string;
   product_price: string;
 }) => {
+  const dispatch = useDispatch();
+
   let [count, setCount] = useState(1);
   let [showAlert, setShowAlert] = useState(false);
   useEffect(() => {
@@ -104,7 +111,8 @@ const AddToCart = ({
       </div>
       <div className="flex items-center">
         <Button
-          onClick={() => addProduct(product_id, count, setShowAlert)}
+          // onClick={() => addProduct(product_id, count, setShowAlert)}
+          onClick={() => addProduct(product_id, count, setShowAlert, dispatch)}
           className="bg-[#212121] text-white font-semibold py-6 px-2 rounded-none w-[80%] md:w-[10rem] md:min-w-fit hover:bg-[#181818]"
         >
           <AiOutlineShoppingCart className="text-3xl" />
