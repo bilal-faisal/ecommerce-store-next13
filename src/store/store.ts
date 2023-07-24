@@ -1,5 +1,4 @@
 import { configureStore } from '@reduxjs/toolkit'
-import counterSlice from './slice/counterSlice'
 import cartSlice from './slice/cartSlice'
 import {
     updateCartItemCountLocalStorageVariable,
@@ -9,7 +8,7 @@ import {
 
 export const store = configureStore({
     reducer: {
-        counterSlice, cartSlice
+        cartSlice
     },
 })
 
