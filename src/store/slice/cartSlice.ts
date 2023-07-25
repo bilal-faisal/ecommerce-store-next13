@@ -46,25 +46,27 @@ export const cartSlice = createSlice({
             state.totalQuanty = updatedUserCartProducts.length;
             state.products = updatedUserCartProducts;
         },
-
+        
         increaseProductQuantity: (state, actions: PayloadAction<any>) => {
-            let updatedUserCartProducts = state.products.map((prod) => {
-                if (prod.product_id == actions.payload.product_id) {
-                    prod.quantity = prod.quantity + 1;
-                }
-                return prod;
-            });
-            state.products = updatedUserCartProducts;
+            let foundProduct = state.products.find((item) => item.product_id === actions.payload.product_id);
+            if (foundProduct) {
+                foundProduct.quantity += 1;
+                state.products = [...state.products, foundProduct];
+            }
         },
         decreaseProductQuantity: (state, actions: PayloadAction<any>) => {
-            let updatedUserCartProducts = state.products.map((prod) => {
-                if (prod.product_id == actions.payload.product_id) {
-                    prod.quantity = prod.quantity - 1;
-                }
-                return prod;
-            });
-            state.products = updatedUserCartProducts;
-        }
+            let foundProduct = state.products.find((item) => item.product_id === actions.payload.product_id);
+            if (foundProduct) {
+                foundProduct.quantity -= 1;
+                state.products = [...state.products, foundProduct];
+            }
+        },
+        changeWholeState: (state, actions: PayloadAction<any>) => {
+            state = {
+                products: actions.payload.products,
+                totalQuanty: actions.payload.quantity,
+            };
+        },
     },
 })
 

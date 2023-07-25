@@ -204,7 +204,7 @@ const SubComp = ({ user_id }: { user_id: string }) => {
                         className="text-xs p-1 border-2 border-gray-800 rounded-full hover:cursor-pointer"
                         onClick={() => {
                           if (product.quantity < 99) {
-                            // ++product.quantity;
+                            // // ++product.quantity;
                             ++allUserSelectedProducts[i].quantity;
                             setAllUserSelectedProducts([
                               ...allUserSelectedProducts,
@@ -214,6 +214,12 @@ const SubComp = ({ user_id }: { user_id: string }) => {
                               allUserSelectedProducts[i].product_id,
                               allUserSelectedProducts[i].quantity
                             );
+
+                            // dispatch(
+                            //   cartActions.increaseProductQuantity({
+                            //     product_id: product.product_id,
+                            //   })
+                            // );
                           }
                         }}
                       >
