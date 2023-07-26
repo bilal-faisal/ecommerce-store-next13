@@ -1,16 +1,11 @@
 "use client";
 import Link from "next/link";
 import React from "react";
-// import Cookie from "js-cookie";
 import { useAuth } from "@clerk/nextjs";
-import {
-  updateCartItemCountLocalStorageVariable,
-  updateUserCartProductsLocalStorageVariable,
-} from "@/components/CartUtils";
+import { useDispatch } from "react-redux";
+import { cartActions } from "@/store/slice/cartSlice";
 
-async function deleteData(user_id:string) {
-  // const user_id = Cookie.get("user_id");
-
+async function deleteData(user_id: string, dispatch: any) {
   if (user_id) {
     let req = await fetch(`/api/cart?user_id=${user_id}`, {
       method: "DELETE",
@@ -19,31 +14,27 @@ async function deleteData(user_id:string) {
     if (!req.ok) {
       return { error: "Unexpected error" };
     } else {
-      updateCartItemCountLocalStorageVariable(0);
-      updateUserCartProductsLocalStorageVariable([]);
-
-      const cartCountChangeEvent = new Event("cartCountChange");
-      window.dispatchEvent(cartCountChangeEvent);
+      dispatch(cartActions.reset());
       return req;
     }
   }
 }
 
-
 const Success = async () => {
-    const { userId: user_id } = useAuth();
-    await deleteData(user_id as string);
-    return (
-      <div className="my-14 px-10 md:px-24 lg:px-32">
-        <h2 className="py-3">Your order has been placed successfully</h2>
-        <p>
-          Go to{" "}
-          <Link href={"/"} className="underline">
-            Home
-          </Link>
-        </p>
-      </div>
-    );
-}
+  const { userId: user_id } = useAuth();
+  const dispatch = useDispatch();
+  await deleteData(user_id as string, dispatch);
+  return (
+    <div className="my-14 px-10 md:px-24 lg:px-32">
+      <h2 className="py-3">Your order has been placed successfully</h2>
+      <p>
+        Go to{" "}
+        <Link href={"/"} className="underline">
+          Home
+        </Link>
+      </p>
+    </div>
+  );
+};
 
-export default Success
+export default Success;

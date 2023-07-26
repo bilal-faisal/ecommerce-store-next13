@@ -4,6 +4,14 @@ import { cart } from "@/db/schema/cart";
 import { eq, and } from "drizzle-orm";
 import { getAuth } from "@clerk/nextjs/server";
 
+export async function PUT(req: NextRequest) {
+    const body = await req.json();
+    let updatedQuantity = body.updatedQuantity;
+
+    const res = await db.update(cart).set({ quantity: updatedQuantity }).where(and(eq(cart.product_id, body.product_id), (eq(cart.user_id, body.user_id))))
+    return NextResponse.json(res);
+}
+
 export async function GET(req: NextRequest) {
     const url = req.nextUrl;
     let user_id;
@@ -49,7 +57,7 @@ export async function POST(req: NextRequest) {
 
     let { userId: user_id } = getAuth(req);
     if (!user_id) {
-        return NextResponse.json({"error":"User not logged in"});
+        return NextResponse.json({ "error": "User not logged in" });
     } else {
         try {
             const productExists = await db.select().from(cart).where(and(eq(cart.product_id, body.product_id), (eq(cart.user_id, user_id))));
@@ -58,7 +66,8 @@ export async function POST(req: NextRequest) {
                 return NextResponse.json(res);
             } else {
                 let updatedQuantity = Number(productExists[0].quantity) + Number(body.quantity);
-                const res = await db.update(cart).set({ quantity: updatedQuantity }).where(eq(cart.product_id, body.product_id))
+                // const res = await db.update(cart).set({ quantity: updatedQuantity }).where(eq(cart.product_id, body.product_id))
+                const res = await db.update(cart).set({ quantity: updatedQuantity }).where(and(eq(cart.product_id, body.product_id), (eq(cart.user_id, body.user_id))))
                 return NextResponse.json(res);
             }
         } catch (e) {

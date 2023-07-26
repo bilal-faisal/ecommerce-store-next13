@@ -14,37 +14,37 @@ import Logo from "/public/logo.png";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
-import { useSelector } from "react-redux";
+import { UserButton, useUser, useClerk } from "@clerk/nextjs";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import { useAuth } from "@clerk/nextjs";
+import { cartActions, fetchProducts } from "@/store/slice/cartSlice";
 
 export function Header() {
   const cartValue = useSelector(
     (state: RootState) => state.cartSlice.totalQuanty
   );
+  const { signOut } = useClerk();
+
   const { push } = useRouter();
   const [navbar, setNavbar] = useState(false);
-  const [cartItemCount, setCartItemCount] = useState(0);
-  // const [searchProd, setSearchProd] = useState("");
+
+  const clerkUser = useUser();
+  const [user, setUser] = useState(clerkUser.isSignedIn);
 
   useEffect(() => {
-    // setCartItemCount(Number(localStorage.getItem("cartItemCount")) || 0);
-    setCartItemCount(
-      JSON.parse(localStorage.getItem("userCartProducts") || "[]").length
-    );
+    setUser(clerkUser.isSignedIn);
+  }, [clerkUser]);
 
-    const handleCartCountChange = () => {
-      setCartItemCount(
-        JSON.parse(localStorage.getItem("userCartProducts") || "[]").length
-      );
-    };
+  let dispatch = useDispatch();
+  const { userId: user_id } = useAuth();
 
-    window.addEventListener("cartCountChange", handleCartCountChange);
-
-    // return () => {
-    //   window.removeEventListener("cartCountChange", handleCartCountChange);
-    // };
-  }, []);
+  useEffect(() => {
+    if (user_id) {
+      // @ts-ignore
+      dispatch(fetchProducts(user_id));
+    }
+  }, [dispatch, user_id]);
 
   return (
     <div className="w-full">
@@ -134,27 +134,42 @@ export function Header() {
                       type="text"
                       placeholder="What you looking for"
                       className="border-none h-6"
-                      // value={searchProd}
                       onChange={(e) => {
-                        // setSearchProd(e.target.value);
                         push(`/search?name=${e.target.value}`);
                       }}
                     />
                   </div>
                 </NavigationMenuItem>
+
                 <NavigationMenuItem>
                   <Link href={"/cart"} onClick={() => setNavbar(false)}>
-                    <Button className="my-3 md:my-0 relative bg-gray-200 text-black hover:bg-gray-300 hover:text-black rounded-full p-2.5">
+                    <button className="my-3 md:my-0 relative bg-gray-200 text-black hover:bg-gray-300 hover:text-black rounded-full p-2.5">
                       <AiOutlineShoppingCart className="text-xl" />
-                      {/* {cartItemCount != 0 && ( */}
                       {cartValue != 0 && (
-                        <div className="absolute top-0.5 -right-2 bg-[#F02D34] text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                          {/* <p>{cartItemCount}</p> */}
+                        <span className="absolute top-0.5 -right-2 bg-[#F02D34] text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
                           <p>{cartValue}</p>
-                        </div>
+                        </span>
                       )}
-                    </Button>
+                    </button>
                   </Link>
+                </NavigationMenuItem>
+
+                <NavigationMenuItem>
+                  {user ? (
+                    <button
+                      className="underline"
+                      onClick={() => {
+                        signOut();
+                        dispatch(cartActions.reset());
+                      }}
+                    >
+                      Sign out
+                    </button>
+                  ) : (
+                    <Link href={"/sign-in"} className="underline">
+                      Sign in
+                    </Link>
+                  )}
                 </NavigationMenuItem>
               </NavigationMenuList>
             </div>

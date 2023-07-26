@@ -4,14 +4,19 @@ import SubComp from "./SubComp";
 import Image from "next/image";
 import { useClerk } from "@clerk/clerk-react";
 import Loader from "../../../public/Loading_icon.gif";
+import Link from "next/link";
+import { useAuth } from "@clerk/nextjs";
 
 const Page = () => {
   const [loading, setLoading] = useState(true);
   const { session } = useClerk();
+  const { userId } = useAuth();
 
   useEffect(() => {
-    setLoading(false);
-  }, []);
+    if (session !== undefined) {
+      setLoading(false);
+    }
+  }, [session]);
 
   return (
     <>
@@ -23,14 +28,17 @@ const Page = () => {
 
           {!loading && !session && (
             <h2 className="text-2xl text-center">
-              You have currently no items in cart
+              You&apos;re not currently logged in.{" "}
+              <Link href="/sign-in" className="underline">
+                Sign in
+              </Link>
             </h2>
           )}
         </div>
       ) : (
         <>
           {/* @ts-ignore */}
-          <SubComp user_id={session.userId} />
+          <SubComp user_id={userId} />
         </>
       )}
     </>

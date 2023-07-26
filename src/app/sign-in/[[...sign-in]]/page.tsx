@@ -2,7 +2,7 @@ import { SignIn } from "@clerk/nextjs";
 
 const page = () => {
   return (
-    <div className="py-24">
+    <div className="py-16">
       <div className="flex justify-center">
         <SignIn />
       </div>
@@ -11,3 +11,5 @@ const page = () => {
 };
 
 export default page;
+
+// additional work: after sign in go back to the page user was already

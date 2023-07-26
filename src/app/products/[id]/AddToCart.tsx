@@ -1,45 +1,13 @@
 "use client";
 import React from "react";
-import { BiMinus } from "react-icons/bi";
+import Alert from "@/components/Alert";
 import { BsPlus } from "react-icons/bs";
+import { BiMinus } from "react-icons/bi";
+import { useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { AiOutlineShoppingCart } from "react-icons/ai";
-import Alert from "@/components/Alert";
-import {
-  updateCartItemCountLocalStorageVariable,
-  updateUserCartProductsLocalStorageVariable,
-} from "@/components/CartUtils";
-import { useDispatch } from "react-redux";
 import { cartActions } from "@/store/slice/cartSlice";
-
-function updateLocalhost(product_id: string, count: number) {
-  let initialUserCartProducts: { product_id: string; quantity: number }[] =
-    JSON.parse(localStorage.getItem("userCartProducts") || "[]");
-
-  let productFound = false;
-  let updatedUserCartProducts = initialUserCartProducts.map((prod) => {
-    if (prod.product_id == product_id) {
-      productFound = true;
-      return {
-        product_id: prod.product_id,
-        quantity: prod.quantity + count,
-      };
-    }
-    return { product_id: prod.product_id, quantity: prod.quantity };
-  });
-  if (!productFound) {
-    updatedUserCartProducts.push({ product_id, quantity: count });
-  }
-  updateUserCartProductsLocalStorageVariable(updatedUserCartProducts);
-
-  if (!productFound) {
-    updateCartItemCountLocalStorageVariable(updatedUserCartProducts.length);
-
-    const cartCountChangeEvent = new Event("cartCountChange");
-    window.dispatchEvent(cartCountChangeEvent);
-  }
-}
 
 async function addProduct(
   product_id: string,
@@ -59,7 +27,6 @@ async function addProduct(
       throw new Error("Something went wrong");
     } else {
       setShowAlert(true);
-      // updateLocalhost(product_id, count);
       dispatch(cartActions.addToCart({ product_id, count }));
     }
   } catch (e) {
@@ -111,7 +78,6 @@ const AddToCart = ({
       </div>
       <div className="flex items-center">
         <Button
-          // onClick={() => addProduct(product_id, count, setShowAlert)}
           onClick={() => addProduct(product_id, count, setShowAlert, dispatch)}
           className="bg-[#212121] text-white font-semibold py-6 px-2 rounded-none w-[80%] md:w-[10rem] md:min-w-fit hover:bg-[#181818]"
         >

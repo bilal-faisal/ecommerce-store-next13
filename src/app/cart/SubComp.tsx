@@ -9,12 +9,9 @@ import React, { useState, useEffect } from "react";
 import { urlForImage } from "../../../sanity/lib/image";
 import Loader from "../../../public/Loading_icon.gif";
 import Alert from "@/components/Alert";
-import {
-  updateUserCartProductsLocalStorageVariable,
-  updateCartItemCountLocalStorageVariable,
-} from "@/components/CartUtils";
-import { useDispatch } from "react-redux";
-import { cartActions } from "@/store/slice/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { cartActions, fetchProducts } from "@/store/slice/cartSlice";
+import { RootState } from "@/store/store";
 
 interface Product {
   title: string;
@@ -22,24 +19,6 @@ interface Product {
   image_thumbnail: IImage;
   quantity: number;
   product_id: string;
-}
-
-function updateLocalhost(product_id: string, count: number) {
-  let initialUserProducts: { product_id: string; quantity: number }[] =
-    JSON.parse(localStorage.getItem("userCartProducts") || "[]");
-
-  let updatedUserProducts = initialUserProducts.map((prod) => {
-    if (prod.product_id == product_id) {
-      return {
-        product_id: prod.product_id,
-        quantity: count,
-      };
-    }
-    return { product_id: prod.product_id, quantity: prod.quantity };
-  });
-  updateUserCartProductsLocalStorageVariable(updatedUserProducts);
-
-  return updatedUserProducts;
 }
 
 async function getSanityData(product_id: string) {
@@ -61,28 +40,7 @@ async function getSanityData(product_id: string) {
   }
 }
 
-async function getData(user_id: string) {
-  let initialUserProducts: { product_id: string; quantity: number }[] =
-    JSON.parse(localStorage.getItem("userCartProducts") || "[]");
-  if (initialUserProducts.length != 0) {
-    return initialUserProducts;
-  } else {
-    // In case userCartProducts has been disturbed in localhost
-    let res = await fetch(`/api/cart?user_id=${user_id}`);
-    let data: CartType[] = await res.json();
-    let updatedUserProducts = data.map((prod) => {
-      return { product_id: prod.product_id, quantity: prod.quantity };
-    });
-    updateUserCartProductsLocalStorageVariable(updatedUserProducts);
-    return data;
-  }
-}
-
-async function deleteProduct(
-  product_id: string,
-  user_id: string,
-  dispatch: any
-) {
+async function deleteProduct(product_id: string, user_id: string) {
   try {
     const response = await fetch(`/api/cart`, {
       body: JSON.stringify({ product_id: product_id, user_id: user_id }),
@@ -92,25 +50,75 @@ async function deleteProduct(
       method: "PATCH",
     });
     if (!response.ok) {
-      alert("wrong");
       throw new Error("Something went wrong");
     } else {
-      dispatch(cartActions.removeFromCart({ product_id }));
     }
   } catch (e) {
     console.log(e);
   }
 }
 
+async function updateQuantity(
+  product_id: string,
+  updatedQuantity: number,
+  user_id: string
+) {
+  try {
+    const response = await fetch(`/api/cart`, {
+      body: JSON.stringify({ product_id, updatedQuantity, user_id }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "PUT",
+    });
+    if (!response.ok) {
+      throw new Error("Something went wrong");
+    } else {
+    }
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+const calculateTotal = (products: Product[]) => {
+  let newTotal = products.reduce(
+    (acc, product) => acc + Number(product.price) * product.quantity,
+    0
+  );
+  return newTotal;
+};
+
 const SubComp = ({ user_id }: { user_id: string }) => {
-  const [allUserSelectedProducts, setAllUserSelectedProducts] = useState<
-    Product[]
-  >([]);
+  const dispatch = useDispatch();
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
-  let [showAlert, setShowAlert] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const cartProducts = useSelector(
+    (state: RootState) => state.cartSlice.products
+  );
+  const [allcartData, setAllcartData] = useState<Product[]>([]);
 
-  const dispatch = useDispatch();
+  useEffect(() => {
+    const fetchData = async () => {
+      const promises = cartProducts.map(async (item) => {
+        let productData: Product = await getSanityData(item.product_id);
+        return {
+          ...productData,
+          quantity: item.quantity,
+          product_id: item.product_id,
+        };
+      });
+
+      let asd = await Promise.all(promises);
+      setAllcartData(asd);
+
+      setLoading(false);
+      setTotal(calculateTotal(allcartData));
+    };
+
+    fetchData();
+  }, [cartProducts]);
+
   useEffect(() => {
     if (showAlert) {
       const timer = setTimeout(() => {
@@ -122,46 +130,6 @@ const SubComp = ({ user_id }: { user_id: string }) => {
       };
     }
   }, [showAlert]);
-  useEffect(() => {
-    const fetchProducts = async () => {
-      let data = await getData(user_id);
-      let allProducts: Product[] = [];
-
-      await Promise.all(
-        data.map(async (item: { product_id: string; quantity: number }) => {
-          let productData: Product = await getSanityData(item.product_id);
-          productData = {
-            // @ts-ignore
-            quantity: item.quantity,
-            // @ts-ignore
-            product_id: item.product_id,
-            ...productData,
-          };
-          allProducts.push(productData);
-        })
-      );
-
-      setAllUserSelectedProducts(allProducts);
-      calculateTotal(allProducts);
-      setLoading(false);
-
-      // store product_id, quantity of every cart product in localstorage
-      let initialUserProducts = allProducts.map((prod) => {
-        return { product_id: prod.product_id, quantity: prod.quantity };
-      });
-      updateUserCartProductsLocalStorageVariable(initialUserProducts);
-    };
-
-    fetchProducts();
-  }, [user_id]); // the effect runs when `user_id` changes
-
-  const calculateTotal = (products: Product[]) => {
-    let newTotal = products.reduce(
-      (acc, product) => acc + Number(product.price) * product.quantity,
-      0
-    );
-    setTotal(newTotal);
-  };
 
   return (
     <div className="flex my-16 px-10 md:px-24 lg:px-32">
@@ -170,7 +138,7 @@ const SubComp = ({ user_id }: { user_id: string }) => {
           <Image src={Loader} alt="Loader..." className="mx-auto"></Image>
         )}
 
-        {!loading && allUserSelectedProducts.length == 0 ? (
+        {!loading && cartProducts.length == 0 ? (
           <div className="my-16 px-10 md:px-24 lg:px-32 h-1/2">
             <h2 className="text-2xl text-center">
               You have currently no items in cart
@@ -178,11 +146,11 @@ const SubComp = ({ user_id }: { user_id: string }) => {
           </div>
         ) : (
           <>
-            {allUserSelectedProducts.map((product, i) => {
+            {allcartData.map((product) => {
               return (
                 <div
                   className="flex items-center w-full bg-gray-100 py-3 px-5 rounded-md"
-                  key={i}
+                  key={product.product_id}
                 >
                   <div>
                     <Image
@@ -202,24 +170,22 @@ const SubComp = ({ user_id }: { user_id: string }) => {
                     <div className="flex flex-col gap-0.5">
                       <div
                         className="text-xs p-1 border-2 border-gray-800 rounded-full hover:cursor-pointer"
-                        onClick={() => {
+                        onClick={async () => {
                           if (product.quantity < 99) {
-                            // // ++product.quantity;
-                            ++allUserSelectedProducts[i].quantity;
-                            setAllUserSelectedProducts([
-                              ...allUserSelectedProducts,
-                            ]);
-                            calculateTotal(allUserSelectedProducts);
-                            updateLocalhost(
-                              allUserSelectedProducts[i].product_id,
-                              allUserSelectedProducts[i].quantity
+                            console.log("---")
+                            console.log(product.product_id)
+                            console.log(user_id)
+                            console.log("---")
+                            await updateQuantity(
+                              product.product_id,
+                              product.quantity + 1,
+                              user_id
                             );
-
-                            // dispatch(
-                            //   cartActions.increaseProductQuantity({
-                            //     product_id: product.product_id,
-                            //   })
-                            // );
+                            dispatch(
+                              cartActions.increaseProductQuantity({
+                                product_id: product.product_id,
+                              })
+                            );
                           }
                         }}
                       >
@@ -229,49 +195,21 @@ const SubComp = ({ user_id }: { user_id: string }) => {
                         className="text-xs p-1 border-2 border-gray-800 rounded-full hover:cursor-pointer"
                         onClick={() => {
                           if (product.quantity == 1) {
-                            let updatedProducts =
-                              allUserSelectedProducts.filter(
-                                (prod) => prod.product_id != product.product_id
-                              );
-                            setAllUserSelectedProducts(updatedProducts);
-                            calculateTotal(updatedProducts);
-
-                            updateUserCartProductsLocalStorageVariable(
-                              updatedProducts.map((prod) => {
-                                return {
-                                  product_id: prod.product_id,
-                                  quantity: prod.quantity,
-                                };
+                            deleteProduct(product.product_id, user_id);
+                            dispatch(
+                              cartActions.removeFromCart({
+                                product_id: product.product_id,
                               })
                             );
-
                             setShowAlert(true);
-
-                            // updating cart icon count
-                            updateCartItemCountLocalStorageVariable(
-                              updatedProducts.length
+                            calculateTotal(allcartData);
+                          } else if (product.quantity > 1) {
+                            dispatch(
+                              cartActions.decreaseProductQuantity({
+                                product_id: product.product_id,
+                              })
                             );
-                            const cartCountChangeEvent = new Event(
-                              "cartCountChange"
-                            );
-                            window.dispatchEvent(cartCountChangeEvent);
-
-                            // remove from db
-                            deleteProduct(
-                              product.product_id,
-                              user_id,
-                              dispatch
-                            );
-                          } else if (product.quantity > 0) {
-                            --allUserSelectedProducts[i].quantity;
-                            setAllUserSelectedProducts([
-                              ...allUserSelectedProducts,
-                            ]);
-                            calculateTotal(allUserSelectedProducts);
-                            updateLocalhost(
-                              allUserSelectedProducts[i].product_id,
-                              allUserSelectedProducts[i].quantity
-                            );
+                            calculateTotal(allcartData);
                           }
                         }}
                       >
@@ -291,7 +229,7 @@ const SubComp = ({ user_id }: { user_id: string }) => {
             <div>
               <h2 className="text-right">Total: Rs {total}</h2>
             </div>
-            <Checkout products={allUserSelectedProducts} />
+            <Checkout products={allcartData} />
           </>
         )}
         {showAlert && (

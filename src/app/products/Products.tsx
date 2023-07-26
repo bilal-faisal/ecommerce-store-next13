@@ -2,7 +2,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { Image as IImage } from "sanity";
-// import { client } from "../../../sanity/lib/client";
 import { urlForImage } from "../../../sanity/lib/image";
 import { useState, useEffect } from "react";
 import Loader from "../../../public/Loading_icon.gif";
