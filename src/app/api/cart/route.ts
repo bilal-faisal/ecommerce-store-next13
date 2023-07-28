@@ -56,6 +56,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
 
     let { userId: user_id } = getAuth(req);
+    console.log(user_id, body.product_id, body.quantity)
     if (!user_id) {
         return NextResponse.json({ "error": "User not logged in" });
     } else {
@@ -67,7 +68,7 @@ export async function POST(req: NextRequest) {
             } else {
                 let updatedQuantity = Number(productExists[0].quantity) + Number(body.quantity);
                 // const res = await db.update(cart).set({ quantity: updatedQuantity }).where(eq(cart.product_id, body.product_id))
-                const res = await db.update(cart).set({ quantity: updatedQuantity }).where(and(eq(cart.product_id, body.product_id), (eq(cart.user_id, body.user_id))))
+                const res = await db.update(cart).set({ quantity: updatedQuantity }).where(and(eq(cart.product_id, body.product_id), (eq(cart.user_id, user_id))))
                 return NextResponse.json(res);
             }
         } catch (e) {
@@ -87,7 +88,7 @@ export async function DELETE(req: NextRequest) {
         }
     } else {
         user_id = url.searchParams.get("user_id") as string;
-        const res = await db.delete(cart).where(eq(cart.user_id, user_id)).returning();
-        return NextResponse.json(res);
     }
+    const res = await db.delete(cart).where(eq(cart.user_id, user_id)).returning();
+    return NextResponse.json(res);
 }

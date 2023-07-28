@@ -56,7 +56,7 @@ const AddToCart = ({
       };
     }
   }, [showAlert]);
-  
+
   return (
     <>
       <div className="flex items-center">

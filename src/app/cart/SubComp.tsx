@@ -120,6 +120,10 @@ const SubComp = ({ user_id }: { user_id: string }) => {
   }, [cartProducts]);
 
   useEffect(() => {
+    setTotal(calculateTotal(allcartData));
+  }, [allcartData]);
+
+  useEffect(() => {
     if (showAlert) {
       const timer = setTimeout(() => {
         setShowAlert(false);
@@ -172,10 +176,10 @@ const SubComp = ({ user_id }: { user_id: string }) => {
                         className="text-xs p-1 border-2 border-gray-800 rounded-full hover:cursor-pointer"
                         onClick={async () => {
                           if (product.quantity < 99) {
-                            console.log("---")
-                            console.log(product.product_id)
-                            console.log(user_id)
-                            console.log("---")
+                            console.log("---");
+                            console.log(product.product_id);
+                            console.log(user_id);
+                            console.log("---");
                             await updateQuantity(
                               product.product_id,
                               product.quantity + 1,
@@ -185,6 +189,10 @@ const SubComp = ({ user_id }: { user_id: string }) => {
                               cartActions.increaseProductQuantity({
                                 product_id: product.product_id,
                               })
+                            );
+                            // calculateTotal(allcartData);
+                            setTotal(
+                              (prevTotal) => prevTotal + Number(product.price)
                             );
                           }
                         }}
@@ -202,14 +210,20 @@ const SubComp = ({ user_id }: { user_id: string }) => {
                               })
                             );
                             setShowAlert(true);
-                            calculateTotal(allcartData);
+                            // calculateTotal(allcartData);
+                            setTotal(
+                              (prevTotal) => prevTotal - Number(product.price)
+                            );
                           } else if (product.quantity > 1) {
                             dispatch(
                               cartActions.decreaseProductQuantity({
                                 product_id: product.product_id,
                               })
                             );
-                            calculateTotal(allcartData);
+                            // calculateTotal(allcartData);
+                            setTotal(
+                              (prevTotal) => prevTotal - Number(product.price)
+                            );
                           }
                         }}
                       >

@@ -30,7 +30,7 @@ const Checkout = ({ products }: { products: Product[] }) => {
       setShowAlert(true);
     }
     const stripe = await getStripePromise();
-    const res = await fetch("/api/stripe-session", {
+    const res = await fetch(`/api/stripe-session`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
