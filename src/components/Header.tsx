@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { useAuth } from "@clerk/nextjs";
 import { cartActions, fetchProducts } from "@/store/slice/cartSlice";
+import { Router } from "next/router";
 
 export function Header() {
   const cartValue = useSelector(
@@ -156,17 +157,18 @@ export function Header() {
 
                 <NavigationMenuItem>
                   {user ? (
-                    <button
-                      className="underline"
-                      onClick={() => {
-                        signOut();
-                        dispatch(cartActions.reset());
-                      }}
-                    >
-                      Sign out
-                    </button>
+                    <Link href={"/"}>
+                      <button
+                        onClick={() => {
+                          signOut();
+                          dispatch(cartActions.reset());
+                        }}
+                      >
+                        Sign out
+                      </button>
+                    </Link>
                   ) : (
-                    <Link href={"/sign-in"} className="underline">
+                    <Link href={"/sign-in"}>
                       Sign in
                     </Link>
                   )}
