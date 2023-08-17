@@ -8,6 +8,8 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { cartActions } from "@/store/slice/cartSlice";
+import { useAuth } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 async function addProduct(
   product_id: string,
@@ -42,6 +44,8 @@ const AddToCart = ({
   product_price: string;
 }) => {
   const dispatch = useDispatch();
+  const { userId } = useAuth();
+  const router = useRouter();
 
   let [count, setCount] = useState(1);
   let [showAlert, setShowAlert] = useState(false);
@@ -78,7 +82,13 @@ const AddToCart = ({
       </div>
       <div className="flex items-center">
         <Button
-          onClick={() => addProduct(product_id, count, setShowAlert, dispatch)}
+          onClick={() => {
+            if (userId) {
+              addProduct(product_id, count, setShowAlert, dispatch);
+            } else {
+              router.push("/sign-in");
+            }
+          }}
           className="bg-[#212121] text-white font-semibold py-6 px-2 rounded-none w-[80%] md:w-[10rem] md:min-w-fit hover:bg-[#181818]"
         >
           <AiOutlineShoppingCart className="text-3xl" />
